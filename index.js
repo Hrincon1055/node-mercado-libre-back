@@ -8,6 +8,7 @@ const app = express();
 app.use(cors());
 // Lectura del body
 app.use(express.json());
+
 // Rutas
 app.use("/api/items", require("./routes/products"));
 // inicializacion de back
