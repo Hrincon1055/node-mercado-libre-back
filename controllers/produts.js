@@ -28,6 +28,7 @@ const getProduts = async (req = request, res = response) => {
         picture: item.thumbnail,
         condition: item.condition,
         free_shipping: item.shipping.free_shipping,
+        address: item.address.state_name,
       };
     });
     return res.status(200).json({
@@ -37,7 +38,7 @@ const getProduts = async (req = request, res = response) => {
       items,
     });
   } catch (error) {
-    console.log(error);
+    console.log("produts LINE 40 =>", error);
     if (error?.response?.status === 400) {
       return res.status(400).json({
         susecces: false,
@@ -77,7 +78,7 @@ const getProdutById = async (req = request, res = response) => {
       },
     });
   } catch (error) {
-    console.log(error.response.status);
+    console.log("produts LINE 80 =>", error);
     if (error?.response?.status === 404) {
       return res.status(404).json({
         susecces: false,
