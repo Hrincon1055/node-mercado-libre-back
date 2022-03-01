@@ -37,8 +37,8 @@ const getProduts = async (req = request, res = response) => {
       items,
     });
   } catch (error) {
-    console.log(error.response.status);
-    if (error.response.status === 400) {
+    console.log(error);
+    if (error?.response?.status === 400) {
       return res.status(400).json({
         susecces: false,
         msg: `Item with  ${q} not found`,
@@ -78,7 +78,7 @@ const getProdutById = async (req = request, res = response) => {
     });
   } catch (error) {
     console.log(error.response.status);
-    if (error.response.status === 404) {
+    if (error?.response?.status === 404) {
       return res.status(404).json({
         susecces: false,
         msg: `Item with id ${id} not found`,
