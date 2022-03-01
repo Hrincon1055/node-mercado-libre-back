@@ -3,16 +3,19 @@ const { author } = require("../utils/constants");
 const axios = require("axios");
 const getProduts = async (req = request, res = response) => {
   const { q = "", limit = 20 } = req.query;
-  console.log("produts LINE 6 =>", limit);
   try {
     const response = await axios.get(
       `https://api.mercadolibre.com/sites/MLA/search?q=${q}&limit=${limit}`
     );
-    const categories = response.data.filters[0]["values"][0][
-      "path_from_root"
-    ].map((category) => {
-      return category.name;
-    });
+
+    const categories = response.data.available_filters[0]["values"].map(
+      (category) => {
+        return {
+          name: category.name,
+          results: category.results,
+        };
+      }
+    );
     const items = response.data.results.map((item) => {
       return {
         id: item.id,
@@ -34,24 +37,27 @@ const getProduts = async (req = request, res = response) => {
       items,
     });
   } catch (error) {
-    return res.status(500).json({
-      susecces: false,
-      msg: "Ha ocurrido un error.",
-    });
+    console.log(error.response.status);
+    if (error.response.status === 400) {
+      return res.status(400).json({
+        susecces: false,
+        msg: `Item with  ${q} not found`,
+      });
+    } else {
+      return res.status(500).json({
+        susecces: false,
+        msg: "Ha ocurrido un error!!!.",
+      });
+    }
   }
 };
 const getProdutById = async (req = request, res = response) => {
   const { id = "" } = req.params;
   try {
-    // const item = await axios.get(`https://api.mercadolibre.com/items/${id}`);
-    // const description = await axios.get(
-    //   `https://api.mercadolibre.com/items/${id}/description`
-    // );
     const [item, description] = await Promise.all([
       axios.get(`https://api.mercadolibre.com/items/${id}`),
       axios.get(`https://api.mercadolibre.com/items/${id}/description`),
     ]);
-    console.log("produts LINE 54 =>", description);
     return res.status(200).json({
       susecces: true,
       author,
@@ -71,6 +77,7 @@ const getProdutById = async (req = request, res = response) => {
       },
     });
   } catch (error) {
+    console.log(error.response.status);
     if (error.response.status === 404) {
       return res.status(404).json({
         susecces: false,
