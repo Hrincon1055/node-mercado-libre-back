@@ -38,7 +38,7 @@ const getProduts = async (req = request, res = response) => {
       items,
     });
   } catch (error) {
-    console.log("produts LINE 40 =>", error);
+    console.log(error);
     if (error?.response?.status === 400) {
       return res.status(400).json({
         susecces: false,
@@ -78,7 +78,7 @@ const getProdutById = async (req = request, res = response) => {
       },
     });
   } catch (error) {
-    console.log("produts LINE 80 =>", error);
+    console.log(error);
     if (error?.response?.status === 404) {
       return res.status(404).json({
         susecces: false,
