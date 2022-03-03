@@ -8,27 +8,23 @@ const getProduts = async (req = request, res = response) => {
       `https://api.mercadolibre.com/sites/MLA/search?q=${q}&limit=${limit}`
     );
 
-    const categories = response.data.available_filters[0]["values"].map(
-      (category) => {
-        return {
-          name: category.name,
-          results: category.results,
-        };
-      }
-    );
+    const categories = response.data?.available_filters[0].values
+      .sort((a, b) => b.results - a.results)
+      .map((item) => item.name)
+      .slice(0, 4);
     const items = response.data.results.map((item) => {
       return {
         id: item.id,
         title: item.title,
         price: {
-          currency: item.prices.prices[0]["currency_id"],
-          amount: item.prices.prices[0]["amount"],
-          decimals: item.prices.prices[0]["amount"],
+          currency: item?.prices?.prices?.conditioncurrency_id,
+          amount: item?.prices?.prices?.amount,
+          decimals: item?.prices?.prices?.amount,
         },
-        picture: item.thumbnail,
-        condition: item.condition,
-        free_shipping: item.shipping.free_shipping,
-        address: item.address.state_name,
+        picture: item?.thumbnail,
+        condition: item?.condition,
+        free_shipping: item?.shipping?.free_shipping,
+        address: item?.address?.state_name,
       };
     });
     return res.status(200).json({
