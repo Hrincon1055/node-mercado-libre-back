@@ -10,8 +10,8 @@ const getProduts = async (req = request, res = response) => {
 
     const categories = response.data?.available_filters[0].values
       .sort((a, b) => b.results - a.results)
-      .map((item) => item.name)
-      .slice(0, 4);
+      .map((item) => ({ id: item.id, name: item.name }));
+
     const items = response.data.results.map((item) => {
       return {
         id: item.id,
